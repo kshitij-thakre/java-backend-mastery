@@ -1,0 +1,72 @@
+# OOP Concepts & Implementation Mapping
+
+This document provides a comprehensive mapping of every Object-Oriented Programming (OOP) and SOLID principle requirement to the exact classes, methods, and architectural components in the **Telemedicine Appointment & Consultation System**.
+
+---
+
+## 1. Core Object-Oriented Fundamentals
+
+| OOP Concept | Target Class / File | Exact Method / Code Symbol | Explanation |
+|---|---|---|---|
+| **Classes and Objects** | [Patient](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/Patient.java), [Doctor](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/Doctor.java), [Appointment](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/Appointment.java) | Class definitions & instantiation in `Main.java` / `DataInitializer.java` | Classes serve as blueprints for domain entities; objects are instantiated at runtime. |
+| **Fields and Methods** | [Doctor](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/Doctor.java) | `private Specialization specialization`, `addAvailableSlot(String)` | Attributes store state; methods define operations and mutations on state. |
+| **Constructors** | [Appointment](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/Appointment.java) | `Appointment(...)` constructor | Initializes object state with essential references and sets default statuses (`BOOKED`, `PENDING`). |
+| **Parameterized Constructors** | [Patient](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/Patient.java) | `Patient(int id, String name, String email, String phone, int age, String bloodGroup)` | Accepts parameters to ensure an object is created in a valid, initialized state. |
+| **`this` Keyword** | [User](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/User.java) | `this.id = id;`, `this.name = name;` | Distinguishes instance fields from constructor parameter arguments with identical names. |
+| **Access Modifiers** | Across all classes | `private`, `protected`, `public` | `private` for attributes, `protected` for subclass accessible fields (if applicable), `public` for API contracts. |
+| **Private Fields** | [User](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/User.java), [Appointment](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/Appointment.java) | `private final int id;`, `private AppointmentStatus status;` | Prevents unauthorized external modification of internal state. |
+| **Getters / Setters** | [Doctor](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/Doctor.java), [Patient](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/Patient.java) | `getConsultationFee()`, `setAge(int)` | Controls read and write access to encapsulated fields. |
+| **Encapsulation** | [Patient](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/Patient.java) | `getMedicalHistory()`, `addMedicalRecord(String)` | Returns `Collections.unmodifiableList(medicalHistory)` to prevent direct external list manipulation; exposes mutator method. |
+| **Validation & Invariants** | [ValidationUtil](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/util/ValidationUtil.java), [Appointment](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/Appointment.java) | `ValidationUtil.validatePositive(...)`, `Appointment.cancel()` | Ensures invariants (e.g. fee > 0, cannot cancel completed appointments, age > 0). |
+| **`final` Fields** | [User](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/User.java), [PrescriptionItem](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/PrescriptionItem.java) | `private final int id;`, `private final String medicineName;` | Protects entity identity and creates immutable value objects. |
+
+---
+
+## 2. Inheritance & Polymorphism
+
+| OOP Concept | Target Class / File | Exact Method / Code Symbol | Explanation |
+|---|---|---|---|
+| **Inheritance & `extends`** | [Patient](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/Patient.java), [Doctor](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/Doctor.java), [Admin](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/Admin.java) | `public class Doctor extends User` | `Doctor`, `Patient`, `Admin` inherit common identity and contact fields from `User`. |
+| **`super` Keyword** | [Doctor](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/Doctor.java) | `super(id, name, email, phone, UserRole.DOCTOR);` | Invokes the parent `User` constructor to validate and initialize inherited fields. |
+| **Constructor Chaining** | [Patient](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/Patient.java), [User](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/User.java) | `this(id, name, email, phone, age, "Unknown");` | Delegating from overloaded constructors to the primary constructor using `this(...)`. |
+| **Method Overriding & `@Override`** | [Doctor](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/Doctor.java), [Patient](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/Patient.java) | `@Override public String getDisplayDetails()` | Subclasses override the abstract method in `User` to render subtype-specific representations. |
+| **Upcasting** | [InMemoryUserRepository](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/repository/InMemoryUserRepository.java), [Main](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/Main.java) | `User user = patient;`, `for (User user : patients)` | Treating `Patient` or `Doctor` instances polymorphically as their supertype `User`. |
+| **Runtime Polymorphism** | [Main](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/Main.java), [PaymentProcessor](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/payment/PaymentProcessor.java) | `user.getDisplayDetails()`, `paymentGateway.processPayment(...)` | The JVM dynamically invokes the subclass implementation at runtime based on actual object instance. |
+| **Method Overloading (Compile-time Polymorphism)** | [User](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/User.java) | `updateContact(String newEmail)` vs `updateContact(String newEmail, String newPhone)` | Multiple methods in the same class share the same name with different parameter signatures. |
+| **Abstract Classes** | [User](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/User.java) | `public abstract class User` | Base class cannot be directly instantiated; provides shared state and behavioral contract. |
+| **Abstract Methods** | [User](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/User.java) | `public abstract String getDisplayDetails();` | Enforces implementation on all concrete subclasses. |
+
+---
+
+## 3. Interfaces & Abstraction
+
+| OOP Concept | Target Class / File | Exact Method / Code Symbol | Explanation |
+|---|---|---|---|
+| **Interfaces** | [PaymentGateway](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/payment/PaymentGateway.java), [NotificationService](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/notification/NotificationService.java), [Repository](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/repository/Repository.java) | `Payment processPayment(int, double);` | Pure contracts defining behavior without prescribing implementation details. |
+| **Multiple Interfaces** | [UpiPayment](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/payment/UpiPayment.java), [CardPayment](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/payment/CardPayment.java) | `implements PaymentGateway, Refundable` | Demonstrates that a class can implement multiple independent interface contracts. |
+| **Interface Inheritance** | [UserRepository](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/repository/UserRepository.java) | `public interface UserRepository extends Repository<User, Integer>` | Interfaces extending base generic interfaces. |
+
+---
+
+## 4. Object Relationships
+
+| Relationship Type | Target Classes | Code Evidence | Explanation |
+|---|---|---|---|
+| **IS-A (Inheritance)** | `Patient` -> `User`, `Doctor` -> `User` | `class Patient extends User` | `Patient` IS-A `User`, `Doctor` IS-A `User`. |
+| **HAS-A (Association)** | [Appointment](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/Appointment.java) | `private final Patient patient;`<br>`private final Doctor doctor;` | `Appointment` has references to independent entities (`Patient` and `Doctor`). Their lifecycles are independent. |
+| **HAS-A (Aggregation)** | [NotificationDispatcher](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/notification/NotificationDispatcher.java) | `private final List<NotificationService> channels;` | `NotificationDispatcher` contains multiple notification channel services that can exist outside the dispatcher. |
+| **HAS-A (Composition)** | [Prescription](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/Prescription.java) -> [PrescriptionItem](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/PrescriptionItem.java) | `private final List<PrescriptionItem> items;` | `PrescriptionItem` belongs strictly to a `Prescription`. It does not have standalone meaning outside it. |
+| **Dependency** | [PaymentProcessor](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/payment/PaymentProcessor.java) | `public Payment executePayment(...)` | `PaymentProcessor` depends on `PaymentGateway` to perform the operation. |
+
+---
+
+## 5. Architectural & SOLID Principles
+
+| Principle | Target Class / File | Implementation Details |
+|---|---|---|
+| **Single Responsibility (SRP)** | All Services & Models | `UserService` only manages user lifecycle; `AppointmentService` manages scheduling; `Prescription` only handles prescription domain state. |
+| **Open/Closed Principle (OCP)** | [PaymentGateway](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/payment/PaymentGateway.java), [NotificationService](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/notification/NotificationService.java) | New payment methods (e.g. `CryptoPayment`, `InsurancePayment`) or notification channels (e.g. `WhatsAppNotification`) can be added without modifying existing code. |
+| **Interface Segregation (ISP)** | [Refundable](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/payment/Refundable.java) vs [CashPayment](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/payment/CashPayment.java) | `CashPayment` only implements `PaymentGateway` (does NOT implement `Refundable`), keeping clients from depending on methods they don't use. |
+| **Dependency Inversion (DIP)** | [PaymentProcessor](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/payment/PaymentProcessor.java), [UserServiceImpl](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/service/UserServiceImpl.java) | High-level modules depend on abstractions (`PaymentGateway`, `UserRepository`), not low-level concrete classes. |
+| **Composition over Inheritance** | [Appointment](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/model/Appointment.java), [NotificationDispatcher](file:///Users/kshitijthakre/Development/Java/java-backend-mastery/Telemedicine-OOPS/src/main/java/com/telemedicine/notification/NotificationDispatcher.java) | Instead of creating deep inheritance trees, classes compose behaviors and associated objects. |
+| **Loose Coupling & High Cohesion** | Architecture wide | Services interact via interfaces; each package focuses solely on its domain responsibility. |
